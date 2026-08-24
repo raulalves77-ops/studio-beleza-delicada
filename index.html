@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Beleza Delicada</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <!-- NAVEGAÇÃO PRINCIPAL -->
+        <header class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-spa logo-icon"></i>
+                <div class="logo-text">
+                    <span>Studio</span>
+                    <strong>Beleza Delicada</strong>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#servicos">Serviços</a>
+                <a href="#profissionais">Profissionais</a>
+                <a href="#galeria">Galeria</a>
+                <a href="#agendar">Agendar</a>
+                <a href="#contato">Contato</a>
+                <button class="btn-admin-toggle" onclick="switchView('admin')">
+                    <i class="fa-solid fa-chart-line"></i> Painel Admin
+                </button>
+                <button class="btn-theme-toggle" onclick="toggleTheme()" title="Alternar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </nav>
+        </header>
+
+        <!-- VISÃO CLIENTE -->
+        <main id="cliente-view" class="content-container">
+            <div class="left-column">
+                <!-- HERO BANNER -->
+                <section class="hero-card" id="home">
+                    <div class="hero-pattern"></div>
+                    <div class="hero-content">
+                        <h1>Realce sua<br><span class="hero-highlight">Beleza Natural ✨</span></h1>
+                        <p class="hero-subtitle">Corte, Coloração & Progressiva com Cuidado Único</p>
+                        <a href="#agendar" class="btn-primary">AGENDAR AGORA</a>
+                    </div>
+                    <div class="hero-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80&w=800" alt="Beleza Natural" class="hero-img">
+                    </div>
+                </section>
+
+                <!-- SERVIÇOS POPULARES -->
+                <section class="services-section" id="servicos">
+                    <h2 class="section-title">Nossos Serviços Populares</h2>
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon-wrapper"><i class="fa-solid fa-scissors"></i></div>
+                            <h3>Cortes Modernos</h3>
+                            <p>Cortes modernos com técnicas exclusivas e visagismo personalizado para valorizar seu rosto.</p>
+                            <button class="btn-secondary" onclick="selectService('Cortes Modernos', 120.00)">VER DETALHES</button>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon-wrapper"><i class="fa-solid fa-brush"></i></div>
+                            <h3>Coloração Premium</h3>
+                            <p>Coloração, mechas e iluminação com produtos de alta performance que tratam os fios.</p>
+                            <button class="btn-secondary" onclick="selectService('Coloração Premium', 250.00)">VER DETALHES</button>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon-wrapper"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <h3>Progressiva Saudável</h3>
+                            <p>Alinhamento e redução de volume mantendo a fibra capilar protegida e super hidratada.</p>
+                            <button class="btn-secondary" onclick="selectService('Progressiva Saudável', 300.00)">VER DETALHES</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GALERIA DE TRABALHOS -->
+                <section class="services-section" id="galeria" style="margin-top: 24px;">
+                    <h2 class="section-title">Nossa Galeria</h2>
+                    <div class="gallery-grid">
+                        <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=400" alt="Trabalho 1">
+                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=400" alt="Trabalho 2">
+                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400" alt="Trabalho 3">
+                    </div>
+                </section>
+            </div>
+
+            <!-- COLUNA LATERAL -->
+            <aside class="right-column" id="agendar">
+                <div class="sidebar-card calendar-card">
+                    <div class="calendar-header">
+                        <button class="cal-btn" onclick="prevMonth()">&lt;</button>
+                        <span class="cal-month" id="calendar-month-year"></span>
+                        <button class="cal-btn" onclick="nextMonth()">&gt;</button>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendar-days-container">
+                        <!-- Gerado via JavaScript -->
+                    </div>
+
+                    <div class="slots-container">
+                        <div class="slots-title-row">
+                            <h4>Horários Disponíveis</h4>
+                            <span class="badge-date" id="selected-date-badge">Selecione</span>
+                        </div>
+
+                        <form id="agendamento-form" onsubmit="goToPaymentStep(event)">
+                            <div class="form-group-sm">
+                                <input type="text" id="client-name" placeholder="Seu Nome Completo" required>
+                            </div>
+                            <div class="form-group-sm">
+                                <select id="service-select" required>
+                                    <option value="">Selecione o Serviço...</option>
+                                    <option value="Cortes Modernos|120">Cortes Modernos - R$ 120,00</option>
+                                    <option value="Coloração Premium|250">Coloração Premium - R$ 250,00</option>
+                                    <option value="Progressiva Saudável|300">Progressiva Saudável - R$ 300,00</option>
+                                </select>
+                            </div>
+                            <div class="form-group-sm">
+                                <select id="time-select" required>
+                                    <option value="07:00 - 10:00">07:00 - 10:00</option>
+                                    <option value="09:00 - 12:00">09:00 - 12:00</option>
+                                    <option value="12:00 - 15:00">12:00 - 15:00</option>
+                                    <option value="17:00 - 20:00">17:00 - 20:00</option>
+                                </select>
+                            </div>
+                            <div class="form-group-sm">
+                                <select id="payment-select" required>
+                                    <option value="PIX">PIX (Instantâneo)</option>
+                                    <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                    <option value="Dinheiro">Dinheiro no Salão</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-slot-submit">PROSSEGUIR PARA PAGAMENTO</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- EQUIPE -->
+                <div class="sidebar-card team-card" id="profissionais">
+                    <h4>Nossa Equipe</h4>
+                    <div class="team-member">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=300" alt="Sarah Jenkins">
+                        <h5>Sarah Jenkins</h5>
+                        <p>Especialista Esteticista & Hairstylist</p>
+                    </div>
+                </div>
+
+                <!-- CONTATO -->
+                <div class="sidebar-card contact-card" id="contato">
+                    <h4>Contato Info</h4>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-location-dot"></i><div>Rua Elsa Peixoto, 236<br>Santo Antônio</div></li>
+                        <li><i class="fa-solid fa-phone"></i><span>(11) 95539-3889</span></li>
+                        <li><i class="fa-solid fa-globe"></i><span>studiobelezadelicada.com</span></li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+
+        <!-- TELA DE CHECKOUT / PAGAMENTO (PÁGINA DEDICADA DE PAGAMENTO) -->
+        <main id="payment-view" class="content-container" style="display: none;">
+            <div class="checkout-card">
+                <button class="btn-secondary" onclick="cancelPayment()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <h2><i class="fa-solid fa-credit-card"></i> Pagamento & Confirmação</h2>
+                <div class="booking-summary" id="booking-summary-box">
+                    <!-- Preenchido via JS -->
+                </div>
+                
+                <div class="payment-upload-section">
+                    <h3>Anexar Comprovante ou Chave PIX</h3>
+                    <p>Faça o pagamento usando o QR Code abaixo ou insira o link/arquivo do comprovante para validar no Banco de Dados.</p>
+                    <div class="pix-box">
+                        <i class="fa-solid fa-qrcode" style="font-size: 80px; color: var(--accent-marsala);"></i>
+                        <p><strong>Chave PIX (CNPJ):</strong> 12.345.678/0001-90</p>
+                    </div>
+                    
+                    <div class="form-group-sm" style="margin-top: 15px;">
+                        <label><strong>Link do Comprovante / Transação:</strong></label>
+                        <input type="url" id="payment-link-input" placeholder="https://link-do-comprovante.com/ou-id-transacao" required>
+                    </div>
+                    
+                    <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="finalizeBookingWithPayment()">
+                        FINALIZAR E CONFIRMAR AGENDAMENTO
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- VISÃO ADMINISTRATIVA (PAINEL ADMIN / DB) -->
+        <main id="admin-view" class="content-container admin-mode" style="display: none;">
+            <div class="admin-header-bar">
+                <h2><i class="fa-solid fa-database"></i> Gestão do Salão e Banco de Dados de Pagamentos</h2>
+                <button class="btn-primary" onclick="switchView('cliente')">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar ao Site
+                </button>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div>
+                        <h3>Faturamento Total</h3>
+                        <p id="total-revenue">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div>
+                        <h3>Total Agendamentos</h3>
+                        <p id="total-bookings">0</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <h3>Clientes Atendidos</h3>
+                        <p id="total-clients">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="db-card">
+                <h3><i class="fa-solid fa-table"></i> Registros de Agendamentos e Status de Pagamento (Mock DB)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Horário/Data</th>
+                                <th>Valor</th>
+                                <th>Comprovante/Link</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="db-table-body">
+                            <!-- JS inserido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
