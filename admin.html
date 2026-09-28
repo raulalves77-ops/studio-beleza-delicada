@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Studio Beleza Delicada</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <header class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-spa logo-icon"></i>
+                <div class="logo-text"><span>Painel</span><strong>Administrativo</strong></div>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Voltar ao Site</a>
+            </nav>
+        </header>
+
+        <main class="admin-dashboard">
+            <!-- Métricas -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <i class="fa-solid fa-wallet metric-icon"></i>
+                    <div>
+                        <h3>Faturamento Total</h3>
+                        <p id="total-revenue">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <i class="fa-solid fa-calendar-check metric-icon"></i>
+                    <div>
+                        <h3>Agendamentos</h3>
+                        <p id="total-bookings">0</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <i class="fa-solid fa-users metric-icon"></i>
+                    <div>
+                        <h3>Clientes Cadastrados</h3>
+                        <p id="total-clients">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Clientes e Profissionais Registrados -->
+            <div class="db-card" style="margin-top: 24px;">
+                <h3><i class="fa-solid fa-users-gear"></i> Profissionais & Clientes Registrados</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Nome</th>
+                                <th>Contato / Detalhe</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Preenchido dinamicamente pelo JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabela de Agendamentos -->
+            <div class="db-card" style="margin-top: 24px;">
+                <h3><i class="fa-solid fa-table"></i> Registros de Agendamentos</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Data/Horário</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="db-table-body">
+                            <!-- Preenchido dinamicamente pelo JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
