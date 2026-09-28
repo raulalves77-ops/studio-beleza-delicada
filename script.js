@@ -1,230 +1,97 @@
-// BANCO DE DADOS EM MEMÓRIA (MOCK BD)
-let dbAgendamentos = [
-    { id: 101, cliente: "Sarah Jenkins", servico: "Cortes Modernos", data: "24/08/2026 - 09:00", valor: 120.00, comprovante: "https://pix.com/tx123", status: "Pago" }
+// PERSISTÊNCIA DE DADOS COM LOCALSTORAGE
+let dbClientes = JSON.parse(localStorage.getItem('dbClientes')) || [];
+let dbProfissionais = JSON.parse(localStorage.getItem('dbProfissionais')) || [];
+let dbAgendamentos = JSON.parse(localStorage.getItem('dbAgendamentos')) || [
+    { id: 101, cliente: "Sarah Jenkins", servico: "Cortes Modernos", data: "24/08/2026 - 09:00", valor: 120.00, status: "Pago" }
 ];
 
-// VARIÁVEIS DE CONTROLE DO CALENDÁRIO
-let currentDate = new Date();
-let selectedDate = null;
-let pendingBooking = null;
-
-const monthNames = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-];
-
-// INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
-    renderCalendar();
-    updateAdminMetrics();
+    if (document.getElementById('admin-dashboard') || document.getElementById('users-table-body')) {
+        renderAdminDashboard();
+    }
 });
 
-// LÓGICA DO CALENDÁRIO REAL
-function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+// ALTERNAR FORMULÁRIO DE CADASTRO
+function switchForm(type) {
+    const formCli = document.getElementById('form-cliente');
+    const formProf = document.getElementById('form-profissional');
+    const btns = document.querySelectorAll('.tab-btn');
 
-    document.getElementById('calendar-month-year').innerText = `${monthNames[month]} de ${year}`;
-
-    const container = document.getElementById('calendar-days-container');
-    container.innerHTML = `
-        <span class="day-head">D</span><span class="day-head">S</span><span class="day-head">T</span>
-        <span class="day-head">Q</span><span class="day-head">Q</span><span class="day-head">S</span><span class="day-head">S</span>
-    `;
-
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const lastDay = new Date(year, month + 1, 0).getDate();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Espaços vazios antes do primeiro dia
-    for (let x = 0; x < firstDayIndex; x++) {
-        const emptySpan = document.createElement('span');
-        emptySpan.classList.add('day', 'muted');
-        container.appendChild(emptySpan);
-    }
-
-    // Dias do mês
-    for (let day = 1; day <= lastDay; day++) {
-        const daySpan = document.createElement('span');
-        daySpan.classList.add('day');
-        daySpan.innerText = day;
-
-        const dateObj = new Date(year, month, day);
-
-        // Bloquear dias passados
-        if (dateObj < today) {
-            daySpan.classList.add('disabled');
-        } else {
-            daySpan.onclick = () => selectDate(day, month, year, daySpan);
-        }
-
-        // Marcar selecionado se houver
-        if (selectedDate && selectedDate.getTime() === dateObj.getTime()) {
-            daySpan.classList.add('selected');
-        }
-
-        container.appendChild(daySpan);
+    if (type === 'cliente') {
+        formCli.style.display = 'block';
+        formProf.style.display = 'none';
+        btns[0].classList.add('active');
+        btns[1].classList.remove('active');
+    } else {
+        formCli.style.display = 'none';
+        formProf.style.display = 'block';
+        btns[0].classList.remove('active');
+        btns[1].classList.add('active');
     }
 }
 
-function prevMonth() {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
-}
-
-function nextMonth() {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
-}
-
-function selectDate(day, month, year, element) {
-    selectedDate = new Date(year, month, day);
-    
-    document.querySelectorAll('.calendar-grid .day').forEach(el => el.classList.remove('selected'));
-    element.classList.add('selected');
-
-    const formatted = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}`;
-    document.getElementById('selected-date-badge').innerText = formatted;
-}
-
-// ALTERNAR TEMA CLARO / ESCURO
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
-}
-
-// TROCA DE TELAS (SPA)
-function switchView(view) {
-    document.getElementById('cliente-view').style.display = view === 'cliente' ? 'grid' : 'none';
-    document.getElementById('admin-view').style.display = view === 'admin' ? 'grid' : 'none';
-    document.getElementById('payment-view').style.display = view === 'payment' ? 'grid' : 'none';
-
-    if (view === 'admin') renderDatabaseTable();
-}
-
-function selectService(nomeServico, preco) {
-    const select = document.getElementById('service-select');
-    for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].value.includes(nomeServico)) {
-            select.selectedIndex = i;
-            break;
-        }
-    }
-    document.getElementById('agendar').scrollIntoView({ behavior: 'smooth' });
-}
-
-// ETAPA 1: DIRECIOPNAR PARA TELA DE PAGAMENTO
-function goToPaymentStep(event) {
+// CADASTRO DE CLIENTES/PROFISSIONAIS
+function handleRegister(event, type) {
     event.preventDefault();
 
-    if (!selectedDate) {
-        alert("Por favor, escolha uma data disponível no calendário!");
-        return;
+    if (type === 'cliente') {
+        const cliente = {
+            nome: document.getElementById('cli-nome').value,
+            email: document.getElementById('cli-email').value,
+            telef: document.getElementById('cli-telef').value
+        };
+        dbClientes.push(cliente);
+        localStorage.setItem('dbClientes', JSON.stringify(dbClientes));
+        alert('✨ Cliente cadastrado com sucesso!');
+    } else {
+        const prof = {
+            nome: document.getElementById('prof-nome').value,
+            especialidade: document.getElementById('prof-especialidade').value,
+            telef: document.getElementById('prof-telef').value
+        };
+        dbProfissionais.push(prof);
+        localStorage.setItem('dbProfissionais', JSON.stringify(dbProfissionais));
+        alert('✨ Profissional cadastrado com sucesso!');
     }
 
-    const name = document.getElementById('client-name').value;
-    const serviceRaw = document.getElementById('service-select').value;
-    const time = document.getElementById('time-select').value;
-    const paymentMethod = document.getElementById('payment-select').value;
-
-    const [servicoNome, preco] = serviceRaw.split('|');
-
-    const formattedDate = `${String(selectedDate.getDate()).padStart(2, '0')}/${String(selectedDate.getMonth() + 1).padStart(2, '0')}/${selectedDate.getFullYear()}`;
-
-    pendingBooking = {
-        id: Math.floor(1000 + Math.random() * 9000),
-        cliente: name,
-        servico: servicoNome,
-        data: `${formattedDate} - ${time}`,
-        valor: parseFloat(preco),
-        metodo: paymentMethod
-    };
-
-    // Renderizar dados na tela de pagamento
-    document.getElementById('booking-summary-box').innerHTML = `
-        <p><strong>Cliente:</strong> ${pendingBooking.cliente}</p>
-        <p><strong>Serviço:</strong> ${pendingBooking.servico}</p>
-        <p><strong>Data/Horário:</strong> ${pendingBooking.data}</p>
-        <p><strong>Método Selecionado:</strong> ${pendingBooking.metodo}</p>
-        <p><strong>Total a Pagar:</strong> <span style="color:var(--accent-marsala); font-size:18px; font-weight:bold;">R$ ${pendingBooking.valor.toFixed(2)}</span></p>
-    `;
-
-    switchView('payment');
+    event.target.reset();
 }
 
-function cancelPayment() {
-    switchView('cliente');
-}
+// CARREGAR DADOS NO PAINEL ADMIN
+function renderAdminDashboard() {
+    const usersTbody = document.getElementById('users-table-body');
+    const bookingsTbody = document.getElementById('db-table-body');
 
-// ETAPA 2: FINALIZAR E SALVAR NO BANCO
-function finalizeBookingWithPayment() {
-    const linkInput = document.getElementById('payment-link-input').value;
-
-    if (!linkInput) {
-        alert("Por favor, cole o link do comprovante ou a referência de pagamento!");
-        return;
+    if (usersTbody) {
+        usersTbody.innerHTML = '';
+        dbClientes.forEach(c => {
+            usersTbody.innerHTML += `<tr><td><span class="badge-cli">Cliente</span></td><td>${c.nome}</td><td>${c.telef} | ${c.email}</td></tr>`;
+        });
+        dbProfissionais.forEach(p => {
+            usersTbody.innerHTML += `<tr><td><span class="badge-prof">Profissional</span></td><td>${p.nome}</td><td>${p.especialidade} (${p.telef})</td></tr>`;
+        });
     }
 
-    pendingBooking.comprovante = linkInput;
-    pendingBooking.status = "Aguardando Validação";
+    if (bookingsTbody) {
+        bookingsTbody.innerHTML = '';
+        dbAgendamentos.forEach(b => {
+            bookingsTbody.innerHTML += `
+                <tr>
+                    <td>#${b.id}</td>
+                    <td>${b.cliente}</td>
+                    <td>${b.servico}</td>
+                    <td>${b.data}</td>
+                    <td>R$ ${b.valor.toFixed(2)}</td>
+                    <td>${b.status}</td>
+                </tr>`;
+        });
+    }
 
-    dbAgendamentos.push(pendingBooking);
-    updateAdminMetrics();
-
-    alert(`✨ Agendamento recebido!\nO comprovante de ${pendingBooking.cliente} foi anexado com sucesso.`);
-    
-    document.getElementById('agendamento-form').reset();
-    document.getElementById('payment-link-input').value = '';
-    selectedDate = null;
-    document.getElementById('selected-date-badge').innerText = 'Selecione';
-    renderCalendar();
-
-    switchView('cliente');
-}
-
-// RENDERIZAR TABELA ADMIN
-function renderDatabaseTable() {
-    const tbody = document.getElementById('db-table-body');
-    tbody.innerHTML = '';
-
-    dbAgendamentos.forEach(item => {
-        const row = `
-            <tr>
-                <td>#${item.id}</td>
-                <td><strong>${item.cliente}</strong></td>
-                <td>${item.servico}</td>
-                <td>${item.data}</td>
-                <td>R$ ${item.valor.toFixed(2)}</td>
-                <td><a href="${item.comprovante}" target="_blank" style="color:var(--accent-marsala);">Ver Anexo</a></td>
-                <td><span class="status-tag status-pago">${item.status}</span></td>
-                <td>
-                    <button style="border:none; background:none; color:red; cursor:pointer;" onclick="deleteBooking(${item.id})">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
-    });
-}
-
-function deleteBooking(id) {
-    dbAgendamentos = dbAgendamentos.filter(item => item.id !== id);
-    renderDatabaseTable();
-    updateAdminMetrics();
-}
-
-function updateAdminMetrics() {
-    let revenue = 0;
-    const clientsSet = new Set();
-
-    dbAgendamentos.forEach(item => {
-        revenue += item.valor;
-        clientsSet.add(item.cliente);
-    });
-
-    document.getElementById('total-revenue').innerText = `R$ ${revenue.toFixed(2)}`;
-    document.getElementById('total-bookings').innerText = dbAgendamentos.length;
-    document.getElementById('total-clients').innerText = clientsSet.size;
+    // Atualizar métricas
+    const totalRev = dbAgendamentos.reduce((acc, curr) => acc + curr.valor, 0);
+    if (document.getElementById('total-revenue')) {
+        document.getElementById('total-revenue').innerText = `R$ ${totalRev.toFixed(2)}`;
+        document.getElementById('total-bookings').innerText = dbAgendamentos.length;
+        document.getElementById('total-clients').innerText = dbClientes.length;
+    }
 }
