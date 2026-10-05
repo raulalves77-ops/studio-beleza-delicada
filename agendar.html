@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar - Studio Beleza Delicada</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <header class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-spa logo-icon"></i>
+                <div class="logo-text"><span>Studio</span><strong>Beleza Delicada</strong></div>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="profissionais.html">Profissionais</a>
+                <a href="galeria.html">Galeria</a>
+                <a href="contato.html">Contato</a>
+                <a href="agendar.html" class="active">Agendar</a>
+                <a href="cadastro.html">Cadastre-se</a>
+                <a href="login.html" class="btn-admin-nav"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            </nav>
+        </header>
+
+        <main class="registration-container">
+            <form class="form-card" onsubmit="handleBooking(event)">
+                <h2><i class="fa-solid fa-calendar-check"></i> Novo Agendamento</h2>
+                <div class="form-group">
+                    <label>Seu Nome</label>
+                    <input type="text" id="agendar-nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Serviço</label>
+                    <select id="agendar-servico" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Profissional (opcional)</label>
+                    <select id="agendar-profissional"></select>
+                </div>
+                <div class="form-group">
+                    <label>Data e Horário</label>
+                    <input type="datetime-local" id="agendar-data" required>
+                </div>
+                <button type="submit" class="btn-primary">CONFIRMAR AGENDAMENTO</button>
+            </form>
+        </main>
+        <footer>© 2026 Studio Beleza Delicada</footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

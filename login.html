@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Studio Beleza Delicada</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <header class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-spa logo-icon"></i>
+                <div class="logo-text"><span>Studio</span><strong>Beleza Delicada</strong></div>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="profissionais.html">Profissionais</a>
+                <a href="galeria.html">Galeria</a>
+                <a href="contato.html">Contato</a>
+                <a href="agendar.html">Agendar</a>
+                <a href="cadastro.html">Cadastre-se</a>
+                <a href="login.html" class="btn-admin-nav active"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            </nav>
+        </header>
+
+        <main class="registration-container">
+            <form class="form-card" onsubmit="handleLogin(event)">
+                <h2><i class="fa-solid fa-lock"></i> Acessar Conta</h2>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="login-senha" required>
+                </div>
+                <button type="submit" class="btn-primary">ENTRAR</button>
+                <p style="margin-top:14px; color: var(--text-secondary); font-size:13px;">
+                    Admin: admin@studio.com / admin123 — ou use o e-mail e senha do seu cadastro.
+                </p>
+            </form>
+        </main>
+        <footer>© 2026 Studio Beleza Delicada</footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
